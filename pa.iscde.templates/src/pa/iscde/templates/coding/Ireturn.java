@@ -1,6 +1,11 @@
 package pa.iscde.templates.coding;
 
 import pa.iscde.templates.model.MethodDeclaration;
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
 
 public interface Ireturn {
 	public String textForReturn(MethodDeclaration declaration);
@@ -14,5 +19,5 @@ public interface Ireturn {
 	public String returnChar();
 	public String returnBoolean();
 	public String returnString();
-	public String returnDefault();
+	public String returnDefault(MethodDeclaration declaration);
 }

@@ -8,13 +8,17 @@ import java.util.SortedSet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -35,6 +39,11 @@ import pt.iscte.pidesco.projectbrowser.model.PackageElement;
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
 public class TemplateViewer implements PidescoView {
 	//The external plugins required
 	private JavaEditorServices _jeServices;
@@ -53,10 +62,18 @@ public class TemplateViewer implements PidescoView {
 	
 	private Ianotate annotator;
 	
+	private Collection<TemplateReturns> deafultCodeList;
+	
+	private Collection<Ianotate> annotatorList;	
+	
 	//Constructor
 	public TemplateViewer() {
 		deafultCode = new DefaultReturns();
 		annotator = new TemplateAnnotator();
+		deafultCodeList = new ArrayList<>();
+		annotatorList = new ArrayList<>();
+		deafultCodeList.add(deafultCode);
+		annotatorList.add(annotator);
 	}
 
 	//Metodo para permitir a alteração do código default quando são adicionados os metodos
@@ -78,7 +95,7 @@ public class TemplateViewer implements PidescoView {
 	private void CreateButtons(Composite viewArea)
 	{
 		final Button button = new Button(viewArea, SWT.PUSH);
-		button.setLayoutData((new GridData(SWT.LEFT, SWT.TOP, false, false,-1 ,0)));
+		button.setLayoutData((new GridData(SWT.LEFT, SWT.TOP, false, false,1 ,1)));
 		button.setText("Refresh List");
 		button.addMouseListener(new MouseListener() {
 			
@@ -96,7 +113,7 @@ public class TemplateViewer implements PidescoView {
 		
 		final Button button2 = new Button(viewArea, SWT.PUSH);
 		button2.setText("Implement current file");
-		button2.setLayoutData((new GridData(SWT.RIGHT, SWT.TOP, false, false,-1 ,0)));
+		button2.setLayoutData((new GridData(SWT.RIGHT, SWT.TOP, false, false,1 ,1)));
 		button2.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -134,7 +151,7 @@ public class TemplateViewer implements PidescoView {
 	private void CreateTree(Composite viewArea)
 	{
 		arvoreInterfaces = new Tree(viewArea, SWT.NULL);
-		arvoreInterfaces.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,1 ,1));
+		arvoreInterfaces.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,2 ,1));
 		arvoreInterfaces.addListener(SWT.MouseDoubleClick, new Listener() {
 			
 			@Override
@@ -147,13 +164,67 @@ public class TemplateViewer implements PidescoView {
 			}
 		});
 	}
+	
+	private void CreateCombos (Composite viewArea)
+	{
+		Label lb1 = new Label(viewArea, SWT.NULL);
+		lb1.setLayoutData((new GridData(SWT.LEFT, SWT.TOP, false, false,1 ,1)));
+		lb1.setText("Auto code template:");
+		
+		final Combo cb1 = new Combo(viewArea, SWT.NULL);
+		cb1.setLayoutData((new GridData(SWT.RIGHT, SWT.TOP, false, false,1 ,1)));
+		cb1.setSize(new Point(150, 20));
+		String items1[] =  {"Dafault"};
+		cb1.setItems(items1);
+		cb1.select(0);
+		cb1.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				Object[] dr = deafultCodeList.toArray();
+				SetDefaultReturns( (TemplateReturns) dr[cb1.getSelectionIndex()]);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+		});
+		
+		Label lb2 = new Label(viewArea, SWT.NULL);
+		lb2.setLayoutData((new GridData(SWT.LEFT, SWT.TOP, false, false,1 ,1)));
+		lb2.setText("Anotator code template:");
+		
+		final Combo cb2 = new Combo(viewArea, SWT.NULL);
+		cb2.setLayoutData((new GridData(SWT.RIGHT, SWT.TOP, false, false,1 ,1)));
+		cb2.setSize(new Point(150, 20));
+		String items2[] =  {"Dafault"};
+		cb2.setItems(items2);
+		cb2.select(0);
+		cb2.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				Object[] dr = annotatorList.toArray();
+				SetAnnotators( (TemplateAnnotator) dr[cb2.getSelectionIndex()]);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+		});
+	}
+	
 	@Override
 	public void createContents(Composite viewArea, Map<String, Image> imageMap) {
 		//Get pidesco services
 		_jeServices = Activator.getActivator().getJavaEditorservice(); 
 		_pbservices = Activator.getActivator().getProjectBrowserServices();	
-		viewArea.setLayout(new GridLayout(1,false));
+
+		viewArea.setLayout(new GridLayout(2,false));
 		CreateButtons(viewArea);
+		CreateCombos(viewArea);
 		CreateTree(viewArea);
 		RefreshTree();
 	}

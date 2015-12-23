@@ -6,7 +6,10 @@ import java.util.List;
 
 import pt.iscte.pidesco.javaeditor.service.JavaEditorListener;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
-
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
 
 public class TemplatesListener extends JavaEditorListener.Adapter {
 	private JavaEditorServices jeServices;

@@ -9,6 +9,11 @@ import org.osgi.framework.ServiceReference;
 import pt.iscte.pidesco.javaeditor.service.JavaEditorServices;
 import pt.iscte.pidesco.projectbrowser.service.ProjectBrowserServices;
 
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
 public class Activator implements BundleActivator {
 
 	private static Activator templatesActivator;

@@ -3,6 +3,11 @@ package pa.iscde.templates.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
 public class MethodDeclaration {
 	public String declaration;
 	

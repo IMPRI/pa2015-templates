@@ -9,6 +9,11 @@ import java.util.Collection;
 
 import pt.iscte.pidesco.projectbrowser.model.SourceElement;
 
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
 public class ClassDeclaration {
 	public String fullDeclaration;
 	public Collection<String> includes;
@@ -19,7 +24,7 @@ public class ClassDeclaration {
 	{
 		this(elemento.getFile());
 	}
-	
+
 	public ClassDeclaration(File elemento)
 	{
 		includes = new ArrayList<>();
@@ -30,15 +35,23 @@ public class ClassDeclaration {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			String strLine;
 			boolean isBody = false;
+			boolean isComment = false;
 			while ((strLine = br.readLine()) != null)   {
-				  if (strLine.contains("package")) packageID = strLine.replace("package ", "").replace(";", "");
-				  if (strLine.contains("import")) includes.add(strLine);
-				  if (strLine.contains("class") || strLine.contains("interface")) {
-					  classD = strLine; 
-				  }
-				  lines++;
-				  if (strLine.contains("{")) isBody=true;
+				if (!isBody)
+				{
+					if (strLine.trim().split(" ")[0].contains("/*") || 
+							strLine.trim().split(" ")[0].contains("//")) isComment = true;
+					if ( !isComment )
+					{
+						if (strLine.contains("package")) packageID = strLine.replace("package ", "").replace(";", "");
+						if (strLine.contains("import")) includes.add(strLine);
+						if (strLine.contains("class") || strLine.contains("interface")) { classD = strLine; }
+					}
+					if (strLine.contains("*/") || strLine.trim().split(" ")[0].contains("//")) isComment = false;
 				}
+				lines++;
+				if (strLine.contains("{")) isBody=true;
+			}
 			br.close();
 			fstream.close();
 		}

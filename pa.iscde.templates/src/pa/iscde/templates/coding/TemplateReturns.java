@@ -2,10 +2,19 @@ package pa.iscde.templates.coding;
 
 import pa.iscde.templates.model.MethodDeclaration;
 
+/**
+ * @author Ricardo Imperial & Filipe Pinho
+ *
+ */
+
+
 public abstract class TemplateReturns implements Ireturn {
 
+	/**
+	 * @return Devolve uma string com a mensagem  correspondente ao tipo da declaração do método.
+	 */
 	@Override
-	public String textForReturn(MethodDeclaration declaration) {
+	public final String textForReturn(MethodDeclaration declaration) {
 		String declaratedReturn = declaration.returnType();
 		if (declaratedReturn.equals("void")) return returnVoid();
 		else if (declaratedReturn.equals("byte")) return returnByte();
@@ -16,7 +25,7 @@ public abstract class TemplateReturns implements Ireturn {
 		else if (declaratedReturn.equals("char")) return returnChar();
 		else if (declaratedReturn.equals("boolean")) return returnBoolean();
 		else if (declaratedReturn.equals("string")) return returnString();
-		else return returnDefault();
+		else return returnDefault(declaration);
 	}
 	
 	@Override
@@ -47,6 +56,6 @@ public abstract class TemplateReturns implements Ireturn {
 	public abstract String returnString();
 	
 	@Override
-	public abstract String returnDefault();
+	public abstract String returnDefault(MethodDeclaration declaration);
 
 }
